@@ -24,69 +24,17 @@ def analyzer(parsedResume, context, noOfMatches, threshold):
 
     df_cp['email'].fillna('NA', inplace=True)
     df_cp['Phone number'].fillna('NA', inplace=True)
-    df_cp['experience'].fillna('NA', inplace=True)
-    df_cp['experience summary'].fillna('NA', inplace=True)
-    df_cp['summary'].fillna('NA', inplace=True)
     df_cp['skills'].fillna('NA', inplace=True)
     df_cp['technical skills'].fillna('NA', inplace=True)
     df_cp['tech stack'].fillna('NA', inplace=True)
-    df_cp['education'].fillna('NA', inplace=True)
-    # df['job_titles'].fillna('No Job', inplace=True)
 
-
-    # ind = 0
-    # for i in df.degree:
-    #     lst = re.sub("[\s.]", "", i).upper()
-    #     # print(lst)
-    #     for j in lst.split(','):
-    #         if j in ['BE', 'BS', 'BSC', 'BTECH']:
-    #             if df.loc[ind, 'bachelor_degrees'] == 'No Degree':
-    #                 df.loc[ind, 'bachelor_degrees'] = j
-    #             else:
-    #                 df.loc[ind, 'bachelor_degrees'] = df.loc[ind, 'bachelor_degrees'] + ' , ' + j
-    #         elif j in ['ME', 'MS', 'MSC', 'MTECH']:
-    #             if df.loc[ind, 'master_degrees'] == 'No Degree':
-    #                 df.loc[ind, 'master_degrees'] = j
-    #             else:
-    #                 df.loc[ind, 'master_degrees'] = df.loc[ind, 'master_degrees'] + ' , ' + j
-    #         elif j == 'PHD':
-    #             if df.loc[ind, 'docterte_degrees'] == 'No Degree':
-    #                 df.loc[ind, 'docterte_degrees'] = j
-    #             else:
-    #                 df.loc[ind, 'docterte_degrees'] = df.loc[ind, 'docterte_degrees'] + ' , ' + j
-    #     ind += 1
-    #
-    #     ind = 0
-    # for i in df.links:
-    #     lst = re.sub("[\s]", "", i)
-    #     # print(lst)
-    #     for j in lst.split(','):
-    #         if j.find('github') != -1:
-    #             df.loc[ind, 'profiles'] = 'Github'
-    #         elif j.find('linkedin') != -1:
-    #             if df.loc[ind, 'profiles'] == 'No Profile':
-    #                 df.loc[ind, 'profiles'] = 'Linkedin'
-    #             else:
-    #                 df.loc[ind, 'profiles'] = df.loc[ind, 'profiles'] + ' , ' + 'Linkedin'
-    #     ind += 1
-    #
-    #     ind = 0
-    # for i in df.work_experience:
-    #     if i < 0:
-    #         df.loc[ind, 'work_experience'] = i * -1
-    #     elif i > 40:
-    #         df.loc[ind, 'work_experience'] = 0
-    #     ind += 1
-    # df['work_experience'] = df['work_experience'].astype(int)
-
-    # df.drop(['degree', 'links'], axis=1, inplace=True)
     df.isnull().sum()
     df.head()
 
-    lemmatizer = WordNetLemmatizer()
-    analyzer = CountVectorizer().build_analyzer()
+    df = pd.read_csv('/Users/rashmiranjanswain/Documents/workspace/resume-parser-api/jdPath/UpdatedResumeDataSet.csv')
+    print(df)
 
-    with open('/jdPath/Job Description.txt', 'r', encoding ='utf-8') as f:
+    with open('/Users/rashmiranjanswain/Documents/workspace/resume-parser-api/jdPath/Job Description.txt', 'r', encoding ='utf-8') as f:
         file_desc_lst =  [r.replace('\n', '') for r in f.readlines()]
 
 
@@ -115,7 +63,7 @@ def analyzer(parsedResume, context, noOfMatches, threshold):
     zipped_resume_rating = zip(df_cp.email,df_cp.fileName ,cos_sim_list,[x for x in range(len(df))])
     sorted_resume_rating_list = sorted(zipped_resume_rating, key = lambda x: round(x[2]*100,2))
     results = pd.DataFrame(sorted_resume_rating_list, columns=['E-Mail','File Name' ,'resume_score(%)','Ranking'])
-    results['resume_score(%)'] = results.get('resume_score(%)')*100
+    results['resume_score(%)'] = results.get('resume_score(%)')*100+50
     results = results[results['resume_score(%)'] >= threshold]
 
     return results.sort_values(by=['resume_score(%)'],ascending=False).head(noOfMatches)

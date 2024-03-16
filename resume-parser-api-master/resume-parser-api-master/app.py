@@ -72,9 +72,13 @@ def predict():
 
     #Run the model
     result = analyzer(parsedResume, context, noOfMatches, threshold)
-    # print(result.to_json(path_or_buf = None, orient = 'records', date_format = 'epoch', double_precision = 10, force_ascii = True, date_unit = 'ms', default_handler = None))
-    # Return the file for download
     return jsonify(result.to_json(path_or_buf = None, orient = 'records', date_format = 'epoch', double_precision = 10, force_ascii = True, date_unit = 'ms', default_handler = None))
+
+#dummy get call
+@app.route('/getHello', methods=['GET'])
+def getHello():
+   print('Hello World')
+   return "Hello World"
 
 
 class ReportDownload(Resource):
